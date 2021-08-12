@@ -59,6 +59,19 @@ namespace _08_05_Olympics.Services
             AddAthleteSportJunctions(athlete, athleteId);
         }
 
+        public void UpdateAthlete(AthleteModel athleteModel)
+        {
+            string command = $"UPDATE Dbo.AthleteModel SET Name = '{athleteModel.Name}', Surname = '{athleteModel.Surname}', Country_id = '{athleteModel.Country_id}' WHERE Id = {athleteModel.Id};";
+
+            _connection.Open();
+
+            using var sqlCommand = new SqlCommand(command, _connection);
+            sqlCommand.ExecuteNonQuery();
+            _connection.Close();
+            DeleteAthleteSportJunction(athleteModel.Id);
+            AddAthleteSportJunctions(athleteModel, athleteModel.Id);
+
+        }
         private void AddAthleteSportJunctions(AthleteModel athlete, int id)
         {
             var sportsWhereAthleteAttends = athlete.Sports.Where(s => s.Value == true).ToDictionary(s => s.Key, s => s.Value);
@@ -100,6 +113,37 @@ namespace _08_05_Olympics.Services
             _connection.Close();
 
             return id;
+        }
+
+        public List<int> GetSportIds(int athleteId)
+        {
+            List<int> sportIds = new List<int>();
+            string command = $"SELECT Sports_Id FROM dbo.AthleteSportsJunction WHERE Athlete_Id = {athleteId}";
+            _connection.Open();
+
+            using var sqlCommand = new SqlCommand(command, _connection);
+            using var reader = sqlCommand.ExecuteReader();
+
+            while (reader.Read())
+            {
+                sportIds.Add(reader.GetInt32(0));
+            }
+
+            _connection.Close();
+
+            return sportIds;
+        }
+
+        public void DeleteAthleteSportJunction(int deleteId)
+        {
+            string command = $"DELETE FROM dbo.AthleteSportsJunction WHERE Athlete_Id = {deleteId};";
+
+            _connection.Open();
+
+            using var sqlCommand = new SqlCommand(command, _connection);
+            sqlCommand.ExecuteNonQuery();
+
+            _connection.Close();
         }
     }
 }

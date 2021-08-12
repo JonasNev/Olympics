@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace _08_05_Olympics.Models.ViewModels
 {
-    public class IntegratedViewModel
+    public class JoinedViewModel
     {
         public List<AthleteModel> Athletes { get; set; }
         public List<CountryModel> Countries { get; set; }

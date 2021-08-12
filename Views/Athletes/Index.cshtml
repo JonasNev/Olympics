@@ -1,4 +1,4 @@
-﻿@model _08_05_Olympics.Models.ViewModels.IntegratedViewModel
+﻿@model _08_05_Olympics.Models.ViewModels.JoinedViewModel
 
 <h2 class="d-inline-block mb-4">Athletes</h2>
 
@@ -24,9 +24,9 @@ else
             {
                 <tr>
                     <td class="text-center">@athlete.Id</td>
-                    <td class="text-center">@athlete.Name</td>
-                    <td class="text-center">@athlete.Surname</td>
-                    <td class="text-center">@athlete.Country.CountryName</td>
+                    <td class="text-center">@Html.ActionLink(athlete.Name, "Edit", "Athletes", new { id = athlete.Id })</td>
+                    <td class="text-center">@Html.ActionLink(athlete.Surname, "Edit", "Athletes", new { id = athlete.Id })</td>
+                    <td class="text-center">@Html.ActionLink(athlete.Country.CountryName, "Edit", "Athletes", new { id = athlete.Id })</td>
                 </tr>
             }
         </tbody>

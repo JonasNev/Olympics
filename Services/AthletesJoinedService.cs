@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace _08_05_Olympics.Services
 {
-    public class AthletesIntegratedService
+    public class AthletesJoinedService
     {
         private readonly SqlConnection _connection;
         private readonly AthletesDbService _athletesDbService;
         private readonly CountriesDbService _countriesDbService;
         private readonly SportsDbService _sportsDbService;
 
-        public AthletesIntegratedService(SqlConnection connection,
+        public AthletesJoinedService(SqlConnection connection,
                                          AthletesDbService athletesDbService,
                                          CountriesDbService countriesDbService,
                                          SportsDbService sportsDbService)
@@ -26,9 +26,9 @@ namespace _08_05_Olympics.Services
             _sportsDbService = sportsDbService;
         }
 
-        public IntegratedViewModel GetModelForIndex()
+        public JoinedViewModel GetModelForIndex()
         {
-            IntegratedViewModel model = new();
+            JoinedViewModel model = new();
             model.Athletes = _athletesDbService.GetAthletes();
             model.Countries = _countriesDbService.GetCountries();
 
@@ -40,9 +40,9 @@ namespace _08_05_Olympics.Services
             return model;
         }
 
-        public IntegratedViewModel GetModelForCreate()
+        public JoinedViewModel GetModelForCreate()
         {
-            IntegratedViewModel model = new();
+            JoinedViewModel model = new();
             AthleteModel newAthlete = new();
 
             model.Athletes = new List<AthleteModel> { newAthlete };
@@ -53,6 +53,29 @@ namespace _08_05_Olympics.Services
             foreach (var sport in model.Sports)
             {
                 newAthlete.Sports.Add(sport.Id, false);
+            }
+
+            return model;
+        }
+
+        public JoinedViewModel GetModelForEdit(int editId)
+        {
+            JoinedViewModel model = new JoinedViewModel();
+            List<AthleteModel> athletes = _athletesDbService.GetAthletes();
+
+            AthleteModel athleteEdit = athletes.SingleOrDefault(x => x.Id == editId);
+
+            model.Athletes = new List<AthleteModel> {athleteEdit};
+            model.Countries = _countriesDbService.GetCountries();
+            model.Sports = _sportsDbService.GetSports();
+
+            List<int> sportIds = _athletesDbService.GetSportIds(editId);
+            foreach (var sport in model.Sports)
+            {
+                if (sportIds.Contains(sport.Id))
+                    athleteEdit.Sports.Add(sport.Id, true);
+                else
+                    athleteEdit.Sports.Add(sport.Id, false);
             }
 
             return model;

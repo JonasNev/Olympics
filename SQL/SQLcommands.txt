@@ -1,0 +1,7 @@
+﻿// Create a dbo view with wanted parameters
+
+CREATE VIEW dbo.AthletesWithSports AS
+select athletes.*, Sports.SportName from
+dbo.AthleteModel athletes
+inner join dbo.Sports sports
+on athletes.Id = Sports.Id

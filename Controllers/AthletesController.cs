@@ -12,25 +12,25 @@ namespace _08_05_Olympics.Controllers
 {
     public class AthletesController : Controller
     {
-        private readonly AthletesIntegratedService _integratedService;
+        private readonly AthletesJoinedService _joinedService;
         private readonly AthletesDbService _athletesDbService;
 
-        public AthletesController(AthletesIntegratedService integratedService, AthletesDbService athletesDbService)
+        public AthletesController(AthletesJoinedService joinedService, AthletesDbService athletesDbService)
         {
-            _integratedService = integratedService;
+            _joinedService = joinedService;
             _athletesDbService = athletesDbService;
         }
 
         public IActionResult Index()
         {
-            IntegratedViewModel model = _integratedService.GetModelForIndex();
+            JoinedViewModel model = _joinedService.GetModelForIndex();
 
             return View(model);
         }
 
         public IActionResult Create()
         {
-            IntegratedViewModel model = _integratedService.GetModelForCreate();
+            JoinedViewModel model = _joinedService.GetModelForCreate();
 
             return View(model);
         }
@@ -39,6 +39,21 @@ namespace _08_05_Olympics.Controllers
         public IActionResult Create(List<AthleteModel> athletes)
         {
             _athletesDbService.AddAthlete(athletes[0]);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Edit(int id)
+        {
+            JoinedViewModel model = _joinedService.GetModelForEdit(id);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(List<AthleteModel> athletes)
+        {
+            _athletesDbService.UpdateAthlete(athletes[0]);
 
             return RedirectToAction("Index");
         }
