@@ -57,5 +57,17 @@ namespace _08_05_Olympics.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult Delete(int id)
+        {
+            JoinedViewModel model = _joinedService.GetModelForEdit(id);
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(List<AthleteModel> athletes)
+        {
+            return RedirectToAction("Index");
+        }
     }
 }

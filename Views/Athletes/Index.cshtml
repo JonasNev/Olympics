@@ -6,7 +6,7 @@
 
 @if (Model.Athletes.Count == 0)
 {
-    <p>There are no athletes.</p>
+    <p>The Olympics games this ear are kinda slow..</p>
 }
 else
 {
@@ -17,17 +17,29 @@ else
                 <th class="text-center">CountryName</th>
                 <th class="text-center">Surname</th>
                 <th class="text-center">Country</th>
+                <th class="text-center">Sports</th>
+                <th class="text-center">Action Buttons</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var athlete in Model.Athletes)
             {
-                <tr>
-                    <td class="text-center">@athlete.Id</td>
-                    <td class="text-center">@Html.ActionLink(athlete.Name, "Edit", "Athletes", new { id = athlete.Id })</td>
-                    <td class="text-center">@Html.ActionLink(athlete.Surname, "Edit", "Athletes", new { id = athlete.Id })</td>
-                    <td class="text-center">@Html.ActionLink(athlete.Country.CountryName, "Edit", "Athletes", new { id = athlete.Id })</td>
-                </tr>
+            <tr>
+                <td class="text-center">@athlete.Id</td>
+                <td class="text-center">@athlete.Name</td>
+                <td class="text-center">@athlete.Surname</td>
+                <td class="text-center">@athlete.Country.CountryName</td>
+                <td class="text-center">
+                    <ul class="m-0">
+                        @for (int i = 0; i < athlete.Sports.Count; i++)
+                        {
+                            int sportId = athlete.Sports.ElementAt(i).Key;
+                            <li>@Model.Sports.Single(s => s.Id == sportId).SportName</li>
+                        }
+                    </ul>
+                </td>
+                <td>@Html.ActionLink("Edit", "Edit", "Athletes", new { id = athlete.Id }, new { @class = "btn btn-warning", @style = "color:white" })</td>
+            </tr>
             }
         </tbody>
     </table>

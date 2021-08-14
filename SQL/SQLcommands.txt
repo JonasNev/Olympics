@@ -1,7 +1,13 @@
 ﻿// Create a dbo view with wanted parameters
 
-CREATE VIEW dbo.AthletesWithSports AS
-select athletes.*, Sports.SportName from
+CREATE VIEW [dbo].[AthletesWithSports] AS
+select athletes.*, Sports.SportName, Sports.TeamActivity from
 dbo.AthleteModel athletes
-inner join dbo.Sports sports
-on athletes.Id = Sports.Id
+inner join dbo.Countries countries
+on athletes.Country_Id = countries.Id
+inner join dbo.AthleteSportsJunction as ASJ
+on athletes.Id = ASJ.Athlete_id
+inner join dbo.Sports
+on ASJ.Sports_id = Sports.Id
+
+NAMES AND PROPERTIES OF NAMES CANNOT BE USED TWO TIMES or you get an error "SQL Server Error 4104: The multi-part identifier could not be bound."

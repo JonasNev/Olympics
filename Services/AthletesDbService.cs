@@ -48,7 +48,7 @@ namespace _08_05_Olympics.Services
             _connection.Open();
 
             using var command = new SqlCommand($"INSERT INTO dbo.AthleteModel (Name, Surname, Country_id)" +
-                $"VALUES ('{athlete.Name}', '{athlete.Surname}', '{athlete.Country_id}');", _connection);
+                $"VALUES ('{athlete.Name}', '{athlete.Surname}', '{athlete.Country_id}'); SELECT CAST(SCOPE_IDENTITY() AS INT)", _connection);
             command.ExecuteNonQuery();
 
             _connection.Close();
@@ -61,7 +61,9 @@ namespace _08_05_Olympics.Services
 
         public void UpdateAthlete(AthleteModel athleteModel)
         {
-            string command = $"UPDATE Dbo.AthleteModel SET Name = '{athleteModel.Name}', Surname = '{athleteModel.Surname}', Country_id = '{athleteModel.Country_id}' WHERE Id = {athleteModel.Id};";
+            string command = $@"UPDATE Dbo.AthleteModel 
+                                SET Name = '{athleteModel.Name}', Surname = '{athleteModel.Surname}', Country_id = '{athleteModel.Country_id}' 
+                                WHERE Id = {athleteModel.Id};";
 
             _connection.Open();
 
@@ -72,21 +74,26 @@ namespace _08_05_Olympics.Services
             AddAthleteSportJunctions(athleteModel, athleteModel.Id);
 
         }
+
+        public void DeleteAthlete()
+        {
+
+        }
         private void AddAthleteSportJunctions(AthleteModel athlete, int id)
         {
             var sportsWhereAthleteAttends = athlete.Sports.Where(s => s.Value == true).ToDictionary(s => s.Key, s => s.Value);
             if (sportsWhereAthleteAttends.Count == 0)
                 return;
 
-            string queryFragment = "";
+            string querystring = "";
             for (var i = 0; i < sportsWhereAthleteAttends.Count; i++)
             {
-                queryFragment += $"({id}, {sportsWhereAthleteAttends.ElementAt(i).Key}), ";
+                querystring += $"({id}, {sportsWhereAthleteAttends.ElementAt(i).Key}), ";
             }
 
-            queryFragment = queryFragment.Remove(queryFragment.Length - 2);
+            querystring = querystring.Remove(querystring.Length - 2);
 
-            string query = $"INSERT INTO dbo.AthleteSportsJunction VALUES {queryFragment};";
+            string query = $"INSERT INTO dbo.AthleteSportsJunction VALUES {querystring};";
 
             _connection.Open();
 

@@ -31,10 +31,18 @@ namespace _08_05_Olympics.Services
             JoinedViewModel model = new();
             model.Athletes = _athletesDbService.GetAthletes();
             model.Countries = _countriesDbService.GetCountries();
+            model.Sports = _sportsDbService.GetSports();
 
             foreach (var athlete in model.Athletes)
             {
                 athlete.Country = model.Countries.SingleOrDefault(c => c.Id == athlete.Country_id);
+
+                List<int> sportsIds = _athletesDbService.GetSportIds(athlete.Id);
+
+                foreach (int sportId in sportsIds)
+                {
+                    athlete.Sports.Add(sportId, true);
+                }
             }
 
             return model;
