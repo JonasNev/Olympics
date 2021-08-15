@@ -51,26 +51,29 @@ namespace _08_05_Olympics.Services
             return model;
         }
 
-        public JoinedViewModel UpdateModelForIndex()
+        public JoinedViewModel GetModelForSort(SortModel sortModel)
         {
             JoinedViewModel model = new();
-            model.Athletes = _athletesDbService.GetAthletes();
+            model.Athletes = _athletesDbService.SortAthletes(sortModel);
             model.Countries = _countriesDbService.GetCountries();
             model.Sports = _sportsDbService.GetSports();
+            model.Sort = new();
+
+            foreach (var athlete in model.Athletes)
+            {
+                athlete.Country = model.Countries.SingleOrDefault(c => c.Id == athlete.Country_id);
+
+                List<int> sportsIds = _athletesDbService.GetSportIds(athlete.Id);
+
+                foreach (int sportId in sportsIds)
+                {
+                    athlete.Sports.Add(sportId, true);
+                }
+            }
 
             return model;
         }
 
-        public void SortAthletes(string sortCommand)
-        {
-            string command = $@"SELECT * FROM [olympics].[dbo].[AthletesWithSports]
-                                ORDER BY {sortCommand}";
-            _connection.Open();
-
-            using var sqlCommand = new SqlCommand(command, _connection);
-            sqlCommand.ExecuteNonQuery();
-            _connection.Close();
-        }
 
         public JoinedViewModel GetModelForCreate()
         {

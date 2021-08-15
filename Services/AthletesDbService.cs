@@ -48,11 +48,27 @@ namespace Olympics.Services
         public List<AthleteModel> SortAthletes(SortModel sortModel)
         {
             List<AthleteModel> athletes = new();
+            _connection.Open();
 
-            if (sortModel.Sort != null)
+            using var command = new SqlCommand($"SELECT * FROM [olympics].[dbo].[AthletesWithSports] ORDER BY {sortModel.Sort}", _connection);
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
             {
-                string sqlSortCommand = $"ORDER BY {sortModel.Sort}";
+                AthleteModel athlete = new()
+                {
+                    Id = reader.GetInt32(0),
+                    Name = reader.GetString(1),
+                    Surname = reader.GetString(2),
+                    Country_id = reader.GetInt32(3),
+
+                };
+
+                athletes.Add(athlete);
             }
+
+            _connection.Close();
+
             return athletes;
         }
         public void AddAthlete(AthleteModel athlete)

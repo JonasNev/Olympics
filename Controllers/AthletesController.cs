@@ -73,8 +73,7 @@ namespace _08_05_Olympics.Controllers
 
         public IActionResult Sort(JoinedViewModel model)
         {
-            JoinedViewModel sortmodel = _joinedService.GetModelForIndex(model.Sort);
-            //model = _joinedService.SortAthletes(command);
+            JoinedViewModel sortmodel = _joinedService.GetModelForSort(model.Sort);
 
             return View("Index", sortmodel);
         }
