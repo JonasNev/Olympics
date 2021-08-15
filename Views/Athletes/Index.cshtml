@@ -3,6 +3,18 @@
 <h2 class="d-inline-block mb-4">Athletes</h2>
 
 @Html.ActionLink("Add an athlete", "Create", "Athletes", null, new { @class = "btn btn-primary float-right" })
+<p></p>
+
+
+@using (Html.BeginForm("Sort", "Athletes", FormMethod.Post))
+{
+<div>
+    @Html.LabelFor(m => m.Athletes[0].Country_id, "Select how to sort")
+    @Html.DropDownListFor(m => m.Sort.Sort, new SelectList(Model.Sort.SortSelection), "", new { @class = "form-control" })
+    <button type="submit" class="btn btn-primary">Sort</button>
+</div>
+
+}
 
 @if (Model.Athletes.Count == 0)
 {
@@ -24,22 +36,22 @@ else
         <tbody>
             @foreach (var athlete in Model.Athletes)
             {
-            <tr>
-                <td class="text-center">@athlete.Id</td>
-                <td class="text-center">@athlete.Name</td>
-                <td class="text-center">@athlete.Surname</td>
-                <td class="text-center">@athlete.Country.CountryName</td>
-                <td class="text-center">
-                    <ul class="m-0">
-                        @for (int i = 0; i < athlete.Sports.Count; i++)
-                        {
-                            int sportId = athlete.Sports.ElementAt(i).Key;
-                            <li>@Model.Sports.Single(s => s.Id == sportId).SportName</li>
-                        }
-                    </ul>
-                </td>
-                <td>@Html.ActionLink("Edit", "Edit", "Athletes", new { id = athlete.Id }, new { @class = "btn btn-warning", @style = "color:white" })</td>
-            </tr>
+                <tr>
+                    <td class="text-center">@athlete.Id</td>
+                    <td class="text-center">@athlete.Name</td>
+                    <td class="text-center">@athlete.Surname</td>
+                    <td class="text-center">@athlete.Country.CountryName</td>
+                    <td class="text-center">
+                        <ul class="m-0">
+                            @for (int i = 0; i < athlete.Sports.Count; i++)
+                            {
+                                int sportId = athlete.Sports.ElementAt(i).Key;
+                                <li>@Model.Sports.Single(s => s.Id == sportId).SportName</li>
+                            }
+                        </ul>
+                    </td>
+                    <td>@Html.ActionLink("Edit", "Edit", "Athletes", new { id = athlete.Id }, new { @class = "btn btn-warning", @style = "color:white" })</td>
+                </tr>
             }
         </tbody>
     </table>

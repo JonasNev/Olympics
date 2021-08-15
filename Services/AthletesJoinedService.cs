@@ -1,5 +1,7 @@
 ﻿using _08_05_Olympics.Models;
 using _08_05_Olympics.Models.ViewModels;
+using Olympics.Models;
+using Olympics.Services;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -26,12 +28,13 @@ namespace _08_05_Olympics.Services
             _sportsDbService = sportsDbService;
         }
 
-        public JoinedViewModel GetModelForIndex()
+        public JoinedViewModel GetModelForIndex(SortModel sortModel)
         {
             JoinedViewModel model = new();
             model.Athletes = _athletesDbService.GetAthletes();
             model.Countries = _countriesDbService.GetCountries();
             model.Sports = _sportsDbService.GetSports();
+            model.Sort = new();
 
             foreach (var athlete in model.Athletes)
             {
@@ -46,6 +49,27 @@ namespace _08_05_Olympics.Services
             }
 
             return model;
+        }
+
+        public JoinedViewModel UpdateModelForIndex()
+        {
+            JoinedViewModel model = new();
+            model.Athletes = _athletesDbService.GetAthletes();
+            model.Countries = _countriesDbService.GetCountries();
+            model.Sports = _sportsDbService.GetSports();
+
+            return model;
+        }
+
+        public void SortAthletes(string sortCommand)
+        {
+            string command = $@"SELECT * FROM [olympics].[dbo].[AthletesWithSports]
+                                ORDER BY {sortCommand}";
+            _connection.Open();
+
+            using var sqlCommand = new SqlCommand(command, _connection);
+            sqlCommand.ExecuteNonQuery();
+            _connection.Close();
         }
 
         public JoinedViewModel GetModelForCreate()

@@ -2,6 +2,7 @@
 using _08_05_Olympics.Models.ViewModels;
 using _08_05_Olympics.Services;
 using Microsoft.AspNetCore.Mvc;
+using Olympics.Services;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -23,7 +24,7 @@ namespace _08_05_Olympics.Controllers
 
         public IActionResult Index()
         {
-            JoinedViewModel model = _joinedService.GetModelForIndex();
+            JoinedViewModel model = _joinedService.GetModelForIndex(new Olympics.Models.SortModel());
 
             return View(model);
         }
@@ -68,6 +69,14 @@ namespace _08_05_Olympics.Controllers
         public IActionResult Delete(List<AthleteModel> athletes)
         {
             return RedirectToAction("Index");
+        }
+
+        public IActionResult Sort(JoinedViewModel model)
+        {
+            JoinedViewModel sortmodel = _joinedService.GetModelForIndex(model.Sort);
+            //model = _joinedService.SortAthletes(command);
+
+            return View("Index", sortmodel);
         }
     }
 }

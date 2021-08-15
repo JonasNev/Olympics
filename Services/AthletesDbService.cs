@@ -1,11 +1,12 @@
 ﻿using _08_05_Olympics.Models;
+using Olympics.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace _08_05_Olympics.Services
+namespace Olympics.Services
 {
     public class AthletesDbService
     {
@@ -43,6 +44,17 @@ namespace _08_05_Olympics.Services
             return athletes;
         }
 
+
+        public List<AthleteModel> SortAthletes(SortModel sortModel)
+        {
+            List<AthleteModel> athletes = new();
+
+            if (sortModel.Sort != null)
+            {
+                string sqlSortCommand = $"ORDER BY {sortModel.Sort}";
+            }
+            return athletes;
+        }
         public void AddAthlete(AthleteModel athlete)
         {
             _connection.Open();
@@ -58,6 +70,7 @@ namespace _08_05_Olympics.Services
 
             AddAthleteSportJunctions(athlete, athleteId);
         }
+
 
         public void UpdateAthlete(AthleteModel athleteModel)
         {
@@ -75,8 +88,9 @@ namespace _08_05_Olympics.Services
 
         }
 
-        public void DeleteAthlete()
+        public void DeleteAthlete(AthleteModel athleteModel)
         {
+            string command = $@"DELETE FROM AthleteModel WHERE AthleteMo";
 
         }
         private void AddAthleteSportJunctions(AthleteModel athlete, int id)
