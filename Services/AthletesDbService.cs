@@ -23,7 +23,7 @@ namespace Olympics.Services
 
             _connection.Open();
 
-            using var command = new SqlCommand("SELECT * FROM dbo.AthleteModel;", _connection);
+            using var command = new SqlCommand("SELECT * FROM dbo.AthleteModel", _connection);
             using var reader = command.ExecuteReader();
 
             while (reader.Read())
@@ -50,7 +50,14 @@ namespace Olympics.Services
             List<AthleteModel> athletes = new();
             _connection.Open();
 
-            using var command = new SqlCommand($"SELECT * FROM [olympics].[dbo].[AthletesWithSports] ORDER BY {sortModel.Sort}", _connection);
+            using var command = new SqlCommand(@$"Select distinct Id, Name, Surname, CountryName, Country_id, 
+                                                        SportName = STUFF((SELECT DISTINCT ', ' + SportName
+                                                        FROM(SELECT Id, Name, Surname, CountryName, Country_id, SportName FROM[olympics].[dbo].[AthleteSportCountries]) a
+                                                        WHERE[olympics].[dbo].[AthleteSportCountries].id = a.id
+                                                        FOR XML PATH('')), 1, 2, '')
+                                                        FROM
+                                                        [olympics].[dbo].[AthleteSportCountries]
+                                                        ORDER BY {sortModel.Sort}", _connection);
             using var reader = command.ExecuteReader();
 
             while (reader.Read())
@@ -60,8 +67,7 @@ namespace Olympics.Services
                     Id = reader.GetInt32(0),
                     Name = reader.GetString(1),
                     Surname = reader.GetString(2),
-                    Country_id = reader.GetInt32(3),
-
+                    Country_id = reader.GetInt32(4),
                 };
 
                 athletes.Add(athlete);
@@ -104,11 +110,6 @@ namespace Olympics.Services
 
         }
 
-        public void DeleteAthlete(AthleteModel athleteModel)
-        {
-            string command = $@"DELETE FROM AthleteModel WHERE AthleteMo";
-
-        }
         private void AddAthleteSportJunctions(AthleteModel athlete, int id)
         {
             var sportsWhereAthleteAttends = athlete.Sports.Where(s => s.Value == true).ToDictionary(s => s.Key, s => s.Value);

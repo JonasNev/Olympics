@@ -11,3 +11,14 @@ inner join dbo.Sports
 on ASJ.Sports_id = Sports.Id
 
 NAMES AND PROPERTIES OF NAMES CANNOT BE USED TWO TIMES or you get an error "SQL Server Error 4104: The multi-part identifier could not be bound."
+
+SQL query that allows to do (string + string) if a certain property is the same. In this example the ID of athlete is the same and the goal was to add Sport Strings together
+
+Select distinct Id, Name, Surname, CountryName, Country_id, 
+SportName = STUFF((SELECT DISTINCT ', ' + SportName
+           FROM (SELECT Id, Name, Surname, CountryName, Country_id, SportName FROM [olympics].[dbo].[AthleteSportCountries]) a 
+      WHERE [olympics].[dbo].[AthleteSportCountries].id = a.id 
+      FOR XML PATH('')), 1, 2, '')
+FROM
+[olympics].[dbo].[AthleteSportCountries]
+order BY Name
