@@ -19,7 +19,7 @@ namespace _08_05_Olympics.Services
 
         public AthletesJoinedService(SqlConnection connection,
                                          AthletesDbService athletesDbService,
-                                         CountriesDbService countriesDbService,
+                                         CountriesDbService countriesDbService, 
                                          SportsDbService sportsDbService)
         {
             _connection = connection;
@@ -28,13 +28,13 @@ namespace _08_05_Olympics.Services
             _sportsDbService = sportsDbService;
         }
 
-        public JoinedViewModel GetModelForIndex(SortModel sortModel)
+        public JoinedViewModel GetModelForIndex()
         {
             JoinedViewModel model = new();
             model.Athletes = _athletesDbService.GetAthletes();
             model.Countries = _countriesDbService.GetCountries();
             model.Sports = _sportsDbService.GetSports();
-            model.Sort = new();
+            model.SortFilter = new();
 
             foreach (var athlete in model.Athletes)
             {
@@ -47,17 +47,16 @@ namespace _08_05_Olympics.Services
                     athlete.Sports.Add(sportId, true);
                 }
             }
-
             return model;
         }
 
-        public JoinedViewModel GetModelForSort(SortModel sortModel)
+        public JoinedViewModel GetModelForSortFilter(SortFilterModel sortFilterModel)
         {
             JoinedViewModel model = new();
-            model.Athletes = _athletesDbService.SortAthletes(sortModel);
+            model.Athletes = _athletesDbService.SortAthletes(sortFilterModel);
             model.Countries = _countriesDbService.GetCountries();
             model.Sports = _sportsDbService.GetSports();
-            model.Sort = new();
+            model.SortFilter = new();
 
             foreach (var athlete in model.Athletes)
             {
@@ -70,10 +69,8 @@ namespace _08_05_Olympics.Services
                     athlete.Sports.Add(sportId, true);
                 }
             }
-
             return model;
         }
-
 
         public JoinedViewModel GetModelForCreate()
         {

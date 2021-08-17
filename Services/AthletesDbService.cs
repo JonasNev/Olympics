@@ -45,19 +45,40 @@ namespace Olympics.Services
         }
 
 
-        public List<AthleteModel> SortAthletes(SortModel sortModel)
+        public List<AthleteModel> SortAthletes(SortFilterModel sortFilterModel)
         {
             List<AthleteModel> athletes = new();
-            _connection.Open();
+            string sortstring = "";
+            string SportString = "";
+            string CountryString = "";
+            if (sortFilterModel.Sort != null)
+            {
+                sortstring += $"ORDER BY {sortFilterModel.Sort}";
+            }
 
-            using var command = new SqlCommand(@$"Select distinct Id, Name, Surname, CountryName, Country_id, 
+            if (sortFilterModel.FilterSport != null)
+            {
+                SportString += $"AND SportName = '{sortFilterModel.FilterSport}' ";
+            }
+
+            if (sortFilterModel.FilterCountry != null)
+            {
+                CountryString += $"AND CountryName = '{sortFilterModel.FilterCountry}' ";
+            }
+
+            string query = @$"Select distinct Id, Name, Surname, CountryName, Country_id, 
                                                         SportName = STUFF((SELECT DISTINCT ', ' + SportName
                                                         FROM(SELECT Id, Name, Surname, CountryName, Country_id, SportName FROM[olympics].[dbo].[AthleteSportCountries]) a
                                                         WHERE[olympics].[dbo].[AthleteSportCountries].id = a.id
                                                         FOR XML PATH('')), 1, 2, '')
                                                         FROM
                                                         [olympics].[dbo].[AthleteSportCountries]
-                                                        ORDER BY {sortModel.Sort}", _connection);
+                                                        WHERE '' = '' {SportString}{CountryString}
+                                                        {sortstring}
+                                                        ";
+            _connection.Open();
+
+            SqlCommand command = new SqlCommand(query, _connection);
             using var reader = command.ExecuteReader();
 
             while (reader.Read())

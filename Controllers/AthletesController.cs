@@ -24,7 +24,7 @@ namespace _08_05_Olympics.Controllers
 
         public IActionResult Index()
         {
-            JoinedViewModel model = _joinedService.GetModelForIndex(new Olympics.Models.SortModel());
+            JoinedViewModel model = _joinedService.GetModelForIndex();
 
             return View(model);
         }
@@ -71,9 +71,9 @@ namespace _08_05_Olympics.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Sort(JoinedViewModel model)
+        public IActionResult SortFilter(JoinedViewModel model)
         {
-            JoinedViewModel sortmodel = _joinedService.GetModelForSort(model.Sort);
+            JoinedViewModel sortmodel = _joinedService.GetModelForSortFilter(model.SortFilter);
 
             return View("Index", sortmodel);
         }
