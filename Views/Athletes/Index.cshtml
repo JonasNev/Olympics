@@ -9,7 +9,7 @@
 @using (Html.BeginForm("SortFilter", "Athletes", FormMethod.Post))
 {
     <div>
-        @Html.LabelFor(m => m.Athletes[0].Country_id, "Select how to sort::")
+        @Html.LabelFor(m => m.Athletes[0].Country_id, "Select how to sort:")
         @Html.DropDownListFor(m => m.SortFilter.Sort, new SelectList(Model.SortFilter.SortSelection), "", new { @class = "form-control" })
         <div class="form-group">
             @Html.LabelFor(m => m.SortFilter.FilterSport, "Select what sport you want to filter by: ")
