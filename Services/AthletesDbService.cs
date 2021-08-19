@@ -131,6 +131,17 @@ namespace Olympics.Services
 
         }
 
+        public void DeleteAthlete(int id)
+        {
+            string command = $@"DELETE FROM Dbo.AthleteModel
+                                WHERE Id = {id}";
+            DeleteAthleteSportJunction(id);
+            _connection.Open();
+            using var sqlCommand = new SqlCommand(command, _connection);
+            sqlCommand.ExecuteNonQuery();
+            _connection.Close();
+        }
+
         private void AddAthleteSportJunctions(AthleteModel athlete, int id)
         {
             var sportsWhereAthleteAttends = athlete.Sports.Where(s => s.Value == true).ToDictionary(s => s.Key, s => s.Value);

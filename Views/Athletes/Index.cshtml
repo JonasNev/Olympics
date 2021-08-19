@@ -43,21 +43,25 @@ else
         <tbody>
             @foreach (var athlete in Model.Athletes)
             {
-                <tr>
-                    <td class="text-center">@athlete.Name</td>
-                    <td class="text-center">@athlete.Surname</td>
-                    <td class="text-center">@athlete.Country.CountryName</td>
-                    <td class="text-center">
-                        <ul class="m-0">
-                            @for (int i = 0; i < athlete.Sports.Count; i++)
-                            {
-                                int sportId = athlete.Sports.ElementAt(i).Key;
-                                <li>@Model.Sports.Single(s => s.Id == sportId).SportName</li>
-                            }
-                        </ul>
-                    </td>
-                    <td>@Html.ActionLink("Edit", "Edit", "Athletes", new { id = athlete.Id }, new { @class = "btn btn-warning", @style = "color:white" })</td>
-                </tr>
+            <tr>
+                <td class="text-center">@athlete.Name</td>
+                <td class="text-center">@athlete.Surname</td>
+                <td class="text-center">@athlete.Country.CountryName</td>
+                <td class="text-center">
+                    <ul class="m-0">
+                        @for (int i = 0; i < athlete.Sports.Count; i++)
+                        {
+                            int sportId = athlete.Sports.ElementAt(i).Key;
+                            <li>@Model.Sports.Single(s => s.Id == sportId).SportName</li>
+                        }
+                    </ul>
+                </td>
+                <td class="btn-toolbar">
+                    <button>@Html.ActionLink("Delete", "Delete", "Athletes", new { id = athlete.Id }, new { @class = "btn btn-danger", @style = "color:white" })</button>
+                    <button>@Html.ActionLink("Edit", "Edit", "Athletes", new { id = athlete.Id }, new { @class = "btn btn-warning", @style = "color:white" })</button>
+                    <ul></ul>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
